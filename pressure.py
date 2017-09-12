@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import Adafruit_BMP.BMP085 as BMP085
+from datetime import datetime
 from time import sleep
 from dot_matrix_display import clear_terminal
 from dot_matrix_display import print_numbers
@@ -9,11 +10,13 @@ from dot_matrix_display import print_arrows
 sensor = BMP085.BMP085()
 clear_terminal()
 second_list = []
+temp_log = []
 second_count = 60
 minute_list = []
 minute_count = 60
 arrow_list = [0,0,0,0,0,0]
 hour_chg = 0
+LOG_FILE = 'pressure.log'
 
 while True:
     try:
@@ -21,11 +24,24 @@ while True:
         second_list.append(pressure)
         second_list = second_list[-60:]
 
+        temp = sensor.read_temperature()
+        temp_log.append(temp)
+        temp_log = temp_log[-60:]
+
         # Every minute
         if second_count >= 60:
             second_count = 0
             minute_avg = int(sum(second_list) / float(len(second_list)))
             print_numbers(1, 1, "%06d" % (minute_avg))
+
+            log_dict = {}
+            temp_avg = sum(temp_log) / float(len(temp_log))
+            log_dict[datetime.utcnow()] = {'pressure':minute_avg,
+                                           'temp':temp_avg}
+            #print(log_dict)
+
+            with open(LOG_FILE, 'a') as f:
+                f.writelines(str(log_dict) + '\n')
 
             minute_list.append(minute_avg)
             minute_list = minute_list[-60:]
