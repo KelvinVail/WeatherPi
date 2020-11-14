@@ -5,6 +5,7 @@ Install
 curl https://get.pimoroni.com/microdotphat | bash
 curl https://get.pimoroni.com/scrollphathd | bash
 curl https://get.pimoroni.com/fourletterphat | bash
+curl https://get.pimoroni.com/envirophat | bash
 curl https://get.pimoroni.com/hyperpixel4 | bash
 ```
 
